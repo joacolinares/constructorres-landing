@@ -118,35 +118,99 @@ footer .wrap{padding-block:32px;display:grid;gap:14px}
 footer .logo{width:170px}
 @media (max-width:820px){.hero .wrap{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ---- v2 visual ---- */
+:root{--cream:#F4F2ED}
+body{background:var(--cream)}
+.hero{background:var(--navy)}
+.hero .wrap{grid-template-columns:1.05fr .95fr;padding-block:22px 0;gap:36px;align-items:stretch}
+.hero .copy{padding-block:28px 56px;display:flex;flex-direction:column;justify-content:center}
+h1{font-size:clamp(40px,6.4vw,76px);letter-spacing:-1px}
+h1 em,h2 em{font-style:italic;font-family:Georgia,'Times New Roman',serif;font-weight:400}
+.hero-img{position:relative;border-radius:22px 22px 0 0;overflow:hidden;min-height:420px;background:var(--navy2)}
+.hero-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero-img .badge{position:absolute;left:18px;bottom:18px;background:rgba(23,55,73,.88);color:var(--on);border-radius:14px;padding:12px 16px;font-size:14px;backdrop-filter:blur(4px)}
+.hero-img .badge b{display:block;font-family:var(--head);font-size:22px;color:var(--orange-l)}
+.stats-band{background:var(--card);border-bottom:1px solid var(--line)}
+.stats-band .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding-block:22px}
+.stats-band b{display:block;font-family:var(--head);font-size:40px;font-weight:600;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+.stats-band span{font-size:14px;color:var(--muted)}
+.press{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.press span{font-size:13px;color:var(--on-m);border:1px solid var(--navy-line);border-radius:100px;padding:5px 12px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+.split .side{position:sticky;top:20px;border-radius:22px;overflow:hidden;min-height:520px;background:var(--navy)}
+.split .side img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.split .side .q{position:absolute;inset:auto 0 0 0;padding:26px;background:linear-gradient(transparent,rgba(11,26,35,.92));color:#fff;font-family:Georgia,serif;font-size:22px;line-height:1.3}
+.split .side .q small{display:block;font-family:var(--text);font-size:13px;color:#BFD0D9;margin-top:8px}
+.video{background-size:cover;background-position:center}
+.video::before{content:"";position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(11,26,35,.85))}
+.video b,.video span{position:relative}
+.proj{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr))}
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column}
+.pcard .ph{aspect-ratio:4/3;background:var(--navy);position:relative}
+.pcard .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.pcard .ph .pill{position:absolute;top:14px;left:14px;margin:0;background:var(--orange);color:#fff}
+.pcard .bd{padding:18px 20px;display:flex;flex-direction:column;gap:8px}
+.pcard h3{font-family:var(--head);font-weight:600;font-size:21px;margin:0}
+.ficha{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px;margin:0}
+.ficha dt{color:var(--muted)} .ficha dd{margin:0;font-weight:600}
+.fam{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center}
+.fam .pics{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fam .pics div{border-radius:18px;overflow:hidden;aspect-ratio:3/4;background:var(--navy)}
+.fam .pics div:nth-child(2){margin-top:40px}
+.fam .pics img{width:100%;height:100%;object-fit:cover;display:block}
+.names{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 0}
+.names span{background:var(--card);border:1px solid var(--line);border-radius:100px;padding:6px 14px;font-size:14px}
+.names span b{color:var(--orange-ink)}
+.word{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:18px}
+.word div{background:var(--navy);color:var(--on);border-radius:16px;padding:18px;font-family:Georgia,serif;font-style:italic;font-size:24px}
+.word small{display:block;font-family:var(--text);font-style:normal;font-size:12px;color:var(--on-m);margin-top:6px}
+.band{position:relative;overflow:hidden}
+.band .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.18}
+.band>*{position:relative}
+.opts label{position:relative;transition:background .15s,border-color .15s}
+.opts label.on{background:var(--navy);color:#fff;border-color:var(--orange);box-shadow:0 0 0 2px var(--orange) inset;padding-left:32px}
+.opts label.on::before{content:"✓";position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--orange-l);font-weight:700}
+.funnel .opts label{background:var(--card)}
+.funnel .opts label.on{background:var(--navy)}
+@media (max-width:860px){.hero .wrap,.split,.fam{grid-template-columns:1fr}.hero-img{min-height:300px;border-radius:22px}.hero .copy{padding-bottom:8px}.hero .wrap{padding-bottom:22px}.stats-band .wrap{grid-template-columns:repeat(2,1fr)}.split .side{min-height:320px}}
 </style>
 
-<div class="topbar"><div class="wrap"><span>Reunión sin costo en Buenos Aires o en la obra en Mendoza</span><a href="#invertir">Pedila</a></div></div>
+<div class="topbar"><div class="wrap"><span>Reunión sin costo en nuestra oficina de Buenos Aires o en la obra en Mendoza</span><a href="#invertir">Pedila</a></div></div>
 
 <header class="hero">
 <div class="wrap">
 <nav class="nav"><svg class="logo" role="img" aria-label="Constructorres" viewBox="0 0 524 63" xmlns="http://www.w3.org/2000/svg"><g transform="scale(2)"><g fill="currentColor"><path d="M66.55,22.55c-4.19,0-7.23-3.01-7.23-6.97s3.04-6.92,7.23-6.92c3.51,0,6.33,2.18,6.99,5.42h-2.89c-.62-1.68-2.07-2.83-4.1-2.83-2.56,0-4.36,1.85-4.36,4.37s1.79,4.33,4.36,4.33c2.07,0,3.57-1.21,4.14-2.96h2.85c-.66,3.33-3.42,5.56-6.99,5.56"/><path d="M83.04,22.55c-4.21,0-7.27-3.01-7.27-6.97s3.06-6.92,7.27-6.92,7.27,2.98,7.27,6.92-3.04,6.97-7.27,6.97M83.04,19.95c2.58,0,4.37-1.85,4.37-4.33s-1.79-4.37-4.37-4.37-4.39,1.85-4.39,4.37,1.81,4.33,4.39,4.33"/><polygon points="93.03 22.29 93.03 8.91 96.95 8.91 101.53 18.2 102.26 18.2 102.26 8.91 104.91 8.91 104.91 22.29 100.92 22.29 96.42 13 95.69 13 95.69 22.29 93.03 22.29"/><path d="M107.51,22.29v-2.32h5.31c1.7,0,2.4-.95,2.4-1.94,0-.95-.53-1.85-2.38-1.85h-1.32c-2.4,0-4.06-1.46-4.06-3.6s1.67-3.66,4.14-3.66h5.82v2.32h-5.33c-1.1,0-1.63.61-1.63,1.39,0,.71.53,1.32,1.63,1.32h1.25c3.24,0,4.81,1.850,4.81,4.12s-1.59,4.23-4.87,4.23h-5.77Z"/><polygon points="122.72 22.29 122.72 11.2 119.83 11.2 119.83 8.91 128.45 8.91 128.45 11.2 125.56 11.2 125.56 22.29 122.72 22.29"/><path d="M136.61,17.54h-2.87v4.74h-2.84v-13.37h5.84c3.11,0,4.89,1.8,4.89,4.37,0,1.69-.82,3.05-2.32,3.74l2.29,5.26h-2.98l-1.99-4.74ZM133.74,11.18v4.33h2.51c1.77,0,2.45-1.02,2.45-2.18s-.66-2.16-2.42-2.16h-2.54Z"/><path d="M149.43,22.55c-3.29,0-5.42-2.07-5.42-5.42v-8.22h2.82v8.38c0,1.64.95,2.76,2.6,2.76s2.58-1.12,2.58-2.76v-8.38h2.84v8.22c0,3.35-2.1,5.42-5.42,5.42"/><path d="M164.62,22.55c-4.19,0-7.23-3.01-7.23-6.97s3.04-6.92,7.23-6.92c3.51,0,6.33,2.18,6.99,5.42h-2.89c-.62-1.68-2.07-2.83-4.1-2.83-2.56,0-4.36,1.85-4.36,4.37s1.79,4.33,4.36,4.33c2.07,0,3.57-1.21,4.14-2.96h2.86c-.66,3.33-3.42,5.56-6.99,5.56"/><polygon points="175.36 22.29 175.36 11.2 172.47 11.2 172.47 8.91 181.09 8.91 181.09 11.2 178.2 11.2 178.2 22.29 175.36 22.29"/><path d="M189.25,22.55c-4.21,0-7.27-3.01-7.27-6.97s3.06-6.92,7.27-6.92,7.27,2.98,7.27,6.92-3.04,6.97-7.27,6.97M189.25,19.95c2.58,0,4.37-1.85,4.37-4.33s-1.79-4.37-4.37-4.37-4.39,1.85-4.39,4.37,1.81,4.33,4.39,4.33"/><path d="M204.96,17.54h-2.87v4.74h-2.84v-13.37h5.84c3.11,0,4.89,1.8,4.89,4.37,0,1.69-.82,3.05-2.32,3.74l2.29,5.26h-2.98l-1.99-4.74ZM202.09,11.18v4.33h2.51c1.77,0,2.45-1.02,2.45-2.18s-.66-2.16-2.42-2.16h-2.54Z"/><path d="M218.25,17.54h-2.87v4.74h-2.84v-13.37h5.84c3.11,0,4.89,1.8,4.89,4.37,0,1.690-.82,3.05-2.32,3.74l2.29,5.26h-2.98l-1.99-4.74ZM215.37,11.18v4.33h2.51c1.77,0,2.45-1.02,2.45-2.18s-.66-2.16-2.42-2.16h-2.54Z"/><polygon points="234.63 22.29 225.83 22.29 225.83 8.91 234.43 8.91 234.43 11.2 228.66 11.2 228.66 14.21 234.17 14.21 234.17 16.26 228.66 16.26 228.66 20 234.63 20 234.63 22.29"/><path d="M236.75,22.29v-2.32h5.31c1.7,0,2.4-.95,2.4-1.94,0-.95-.53-1.85-2.38-1.85h-1.32c-2.4,0-4.06-1.46-4.06-3.6s1.67-3.66,4.14-3.66h5.82v2.32h-5.33c-1.1,0-1.63.61-1.63,1.39,0,.71.53,1.32,1.63,1.32h1.25c3.24,0,4.81,1.85,4.81,4.12s-1.59,4.23-4.87,4.23h-5.77Z"/></g><g fill="var(--orange)"><polygon points="22.04 22.37 23.54 11.17 30.23 6.78 23.54 2.29 16.62 6.73 14.61 24.6 19.08 29.06 30.23 24.56 30.23 15.66 24.76 20.14 22.04 22.37"/><polygon points="41.38 2.27 30.23 6.78 30.23 15.67 35.7 11.19 38.42 8.96 36.93 20.16 30.23 24.56 36.92 29.04 43.84 24.6 45.85 6.73 41.38 2.27"/></g></g></svg><a href="#invertir">Quiero invertir</a></nav>
-<div>
+<div class="copy">
 <p class="eyebrow">N.º 01 · Inversión en pozo · Mendoza</p>
 <h1>Invertí en ladrillo <em>de verdad.</em></h1>
 <p class="lead">Obras reales en Mendoza, contrato claro y reportes de avance desde el primer día. Para inversores de Buenos Aires y Mendoza, desde USD 10.000.</p>
 <div class="ctas"><a class="btn pri" href="#invertir">Quiero invertir</a><a class="btn sec" href="#galpones">Busco un galpón en BA</a></div>
+<div class="press"><span>Presentes en cada paso</span><span>Empresa familiar mendocina</span><span>Oficina en Buenos Aires</span></div>
 </div>
-<div class="stats" aria-label="Constructorres en números">
-<div class="stat"><b>25</b><span>años de trayectoria familiar</span></div>
-<div class="stat"><b>+30</b><span>obras realizadas</span></div>
-<div class="stat"><b>6</b><span>proyectos activos</span></div>
-<div class="stat"><b>+10.000</b><span>m² construidos</span></div>
-</div>
+<div class="hero-img"><img class="" src="https://constructorres.com.ar/wp-content/uploads/2026/06/constructorres_casco-3.webp" alt="Equipo de Constructorres en obra" loading="lazy" onerror="this.style.visibility='hidden'"><div class="badge"><b>6 proyectos activos</b>en el Gran Mendoza</div></div>
 </div><svg class="iso" aria-hidden="true" viewBox="0 0 469 402" xmlns="http://www.w3.org/2000/svg"><g transform="scale(15) translate(-14.61 -2.27)" fill="currentColor"><polygon points="22.04 22.37 23.54 11.17 30.23 6.78 23.54 2.29 16.62 6.73 14.61 24.6 19.08 29.06 30.23 24.56 30.23 15.66 24.76 20.14 22.04 22.37"/><polygon points="41.38 2.27 30.23 6.78 30.23 15.67 35.7 11.19 38.42 8.96 36.93 20.16 30.23 24.56 36.92 29.04 43.84 24.6 45.85 6.73 41.38 2.27"/></g></svg>
 </header>
+
+<div class="stats-band"><div class="wrap" aria-label="Constructorres en números">
+<div><b>25</b><span>años de trayectoria familiar</span></div>
+<div><b>+30</b><span>obras realizadas</span></div>
+<div><b>6</b><span>proyectos activos</span></div>
+<div><b>+10.000</b><span>m² construidos</span></div>
+</div></div>
 
 <main class="wrap">
 
 <section id="invertir" aria-labelledby="f1t">
+<div class="split">
+<div>
 <span class="num">N.º 02 · Primer paso</span>
 <h2 id="f1t">Contanos qué estás <em>buscando.</em></h2>
 <p class="sub">Cuatro preguntas y tus datos. Te escribimos por WhatsApp en menos de 5 minutos, en horario de oficina, para coordinar la reunión.</p>
 <div class="funnel" data-funnel="1"></div>
+</div>
+<div class="side"><img class="" src="https://constructorres.com.ar/wp-content/uploads/2026/06/constructorres_alta-gracia_09.webp" alt="Obra Alta Gracia en Guaymallén" loading="lazy" onerror="this.style.visibility='hidden'"><p class="q">“Sin promesas vacías, sin números inflados, sin sorpresas en el camino.”<small>Constructorres · Nuestro compromiso</small></p></div>
+</div>
 </section>
 
 <section aria-labelledby="vt">
@@ -154,27 +218,42 @@ footer .logo{width:170px}
 <h2 id="vt">Lo cuentan <em>ellos.</em></h2>
 <p class="sub">Inversores y propietarios que ya construyeron con nosotros.</p>
 <div class="vgrid">
-<div class="video"><div class="play" aria-hidden="true"></div><b>Testimonio de inversor</b><span>Video próximamente</span></div>
-<div class="video"><div class="play" aria-hidden="true"></div><b>Testimonio de propietario</b><span>Video próximamente</span></div>
-<div class="video"><div class="play" aria-hidden="true"></div><b>Inversor de Buenos Aires</b><span>Video próximamente</span></div>
-<div class="video"><div class="play" aria-hidden="true"></div><b>Visita a la obra</b><span>Video próximamente</span></div>
+<div class="video" style="background-image:url('https://constructorres.com.ar/wp-content/uploads/2026/09/Drumond-01.webp')"><div class="play" aria-hidden="true"></div><b>Propietario · Lar de Drumond</b><span>Video próximamente</span></div>
+<div class="video" style="background-image:url('https://constructorres.com.ar/wp-content/uploads/2026/07/constructorres_b%C2%B0-carrascal_04.webp')"><div class="play" aria-hidden="true"></div><b>Propietaria · Carrascal</b><span>Video próximamente</span></div>
+<div class="video" style="background-image:url('https://constructorres.com.ar/wp-content/uploads/2026/06/constructorres_alta-gracia_09.webp')"><div class="play" aria-hidden="true"></div><b>Inversor de Buenos Aires</b><span>Video próximamente</span></div>
+<div class="video" style="background-image:url('https://constructorres.com.ar/wp-content/uploads/2026/09/hierro3.webp')"><div class="play" aria-hidden="true"></div><b>Visita a la obra</b><span>Video próximamente</span></div>
 </div>
 </section>
 
 <section aria-labelledby="pt">
 <span class="num">N.º 04 · Proyectos</span>
-<h2 id="pt">Obras en marcha <em>en el Gran Mendoza.</em></h2>
+<h2 id="pt">Cada obra, <em>una historia de confianza.</em></h2>
 <p class="sub">Podés visitarlas cuando quieras. Precios, plantas y disponibilidad, en la reunión.</p>
-<div class="grid">
-<article class="card"><span class="pill">En obra</span><h3>Alta Gracia</h3><p>Guaymallén. Edificio multifamiliar con locales en planta baja y departamentos de 1 y 2 dormitorios.</p></article>
-<article class="card"><span class="pill">En obra</span><h3>Traza</h3><p>Gran Mendoza. Desarrollo residencial en construcción.</p></article>
-<article class="card"><span class="pill">En obra</span><h3>Zafiros</h3><p>Gran Mendoza. Desarrollo residencial en construcción.</p></article>
-<article class="card"><span class="pill">Entregadas</span><h3>Viviendas unifamiliares</h3><p>Lar de Drumond (Luján de Cuyo), Lar de Vieytes I y Carrascal (Maipú), Cortaderas (Guaymallén).</p></article>
+<div class="proj">
+<article class="pcard"><div class="ph"><img class="" src="https://constructorres.com.ar/wp-content/uploads/2026/06/constructorres_alta-gracia_09.webp" alt="Alta Gracia" loading="lazy" onerror="this.style.visibility='hidden'"><span class="pill">En obra</span></div><div class="bd"><h3>Alta Gracia</h3><dl class="ficha"><dt>Ubicación</dt><dd>Guaymallén</dd><dt>Tipo</dt><dd>Multifamiliar con locales</dd><dt>Unidades</dt><dd>1 y 2 dormitorios</dd><dt>Ticket</dt><dd>Desde USD 10.000</dd></dl></div></article>
+<article class="pcard"><div class="ph"><img class="" src="https://constructorres.com.ar/wp-content/uploads/2026/02/b02.webp" alt="Traza y Zafiros en obra" loading="lazy" onerror="this.style.visibility='hidden'"><span class="pill">En obra</span></div><div class="bd"><h3>Traza y Zafiros</h3><dl class="ficha"><dt>Ubicación</dt><dd>Gran Mendoza</dd><dt>Tipo</dt><dd>Residencial</dd><dt>Estado</dt><dd>En construcción</dd><dt>Visitas</dt><dd>Con turno</dd></dl></div></article>
+<article class="pcard"><div class="ph"><img class="" src="https://constructorres.com.ar/wp-content/uploads/2026/09/Drumond-01.webp" alt="Lar de Drumond" loading="lazy" onerror="this.style.visibility='hidden'"><span class="pill" style="background:var(--navy)">Entregada</span></div><div class="bd"><h3>Lar de Drumond</h3><dl class="ficha"><dt>Ubicación</dt><dd>Luján de Cuyo</dd><dt>Tipo</dt><dd>Vivienda unifamiliar</dd></dl></div></article>
+<article class="pcard"><div class="ph"><img class="" src="https://constructorres.com.ar/wp-content/uploads/2026/07/constructorres_b%C2%B0-lar-de-vieytes-I_01.webp" alt="Lar de Vieytes I" loading="lazy" onerror="this.style.visibility='hidden'"><span class="pill" style="background:var(--navy)">Entregada</span></div><div class="bd"><h3>Lar de Vieytes I</h3><dl class="ficha"><dt>Ubicación</dt><dd>Maipú</dd><dt>Tipo</dt><dd>Vivienda unifamiliar</dd></dl></div></article>
+<article class="pcard"><div class="ph"><img class="" src="https://constructorres.com.ar/wp-content/uploads/2026/07/constructorres_b%C2%B0-carrascal_04.webp" alt="Carrascal" loading="lazy" onerror="this.style.visibility='hidden'"><span class="pill" style="background:var(--navy)">Entregada</span></div><div class="bd"><h3>Carrascal</h3><dl class="ficha"><dt>Ubicación</dt><dd>Maipú</dd><dt>Tipo</dt><dd>Vivienda unifamiliar</dd></dl></div></article>
+<article class="pcard"><div class="ph"><img class="" src="https://constructorres.com.ar/wp-content/uploads/2026/07/Cortaderas.webp" alt="Cortaderas" loading="lazy" onerror="this.style.visibility='hidden'"><span class="pill" style="background:var(--navy)">Entregada</span></div><div class="bd"><h3>Cortaderas</h3><dl class="ficha"><dt>Ubicación</dt><dd>Guaymallén</dd><dt>Tipo</dt><dd>Vivienda unifamiliar</dd></dl></div></article>
+</div>
+</section>
+
+<section aria-labelledby="jt">
+<div class="fam">
+<div>
+<span class="num">N.º 05 · Quiénes somos</span>
+<h2 id="jt">Una familia <em>que construye.</em></h2>
+<p class="sub">Somos una empresa familiar mendocina. Jona Torres está al frente y lo vas a ver en las obras y en la oficina de Buenos Aires. Reportes de avance, transparencia total y comunicación directa desde el primer día.</p>
+<div class="names"><span><b>Jonathan Torres</b></span><span>Matías Torres</span><span>Maxi Torres</span><span>Benjamin Torres</span><span>Jesús Fernandez</span></div>
+<div class="word"><div>Confianza<small>Obra que se puede visitar</small></div><div>Claridad<small>Todo por escrito</small></div><div>Presencia<small>Reportes de avance</small></div></div>
+</div>
+<div class="pics"><div><img class="" src="https://constructorres.com.ar/wp-content/uploads/2026/06/Pvh01.webp" alt="La familia Torres en obra" loading="lazy" onerror="this.style.visibility='hidden'"></div><div><img class="" src="https://constructorres.com.ar/wp-content/uploads/2026/06/Pvh02.webp" alt="Equipo de Constructorres" loading="lazy" onerror="this.style.visibility='hidden'"></div></div>
 </div>
 </section>
 
 <section aria-labelledby="ht">
-<span class="num">N.º 05 · Cómo funciona</span>
+<span class="num">N.º 06 · Cómo funciona</span>
 <h2 id="ht">De tu consulta <em>a tu obra.</em></h2>
 <div class="steps">
 <div class="step"><b>00</b><h3>Completás el formulario</h3><p>Cuatro preguntas para entender qué buscás.</p></div>
@@ -186,8 +265,8 @@ footer .logo{width:170px}
 </section>
 
 <section id="galpones" aria-labelledby="gt">
-<div class="band">
-<div><span class="num" style="color:var(--on-m)">N.º 06 · Para empresas</span>
+<div class="band"><img class="bg" src="https://constructorres.com.ar/wp-content/uploads/2026/02/SS02.webp" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
+<div><span class="num" style="color:var(--on-m)">N.º 07 · Para empresas</span>
 <h2 id="gt">Galpones en Buenos Aires, <em>a 10 años.</em></h2>
 <p>Espacios para tu negocio en los galpones que estamos construyendo en Buenos Aires, con contrato de alquiler a 10 años.</p>
 <a class="btn pri" href="#invertir" data-need="galpon">Consultar por un galpón</a></div>
@@ -195,19 +274,18 @@ footer .logo{width:170px}
 </div>
 </section>
 
-<section aria-labelledby="jt">
-<span class="num">N.º 07 · Quiénes somos</span>
-<h2 id="jt">Una constructora <em>que acompaña.</em></h2>
-<p class="sub">Somos una empresa familiar mendocina. Jona Torres está al frente y lo vas a ver en las obras y en la oficina de Buenos Aires. Sin promesas vacías, sin números inflados, sin sorpresas en el camino.</p>
+<section aria-labelledby="lt">
+<span class="num">N.º 08 · Lo legal</span>
+<h2 id="lt">Lo importante, <em>por escrito.</em></h2>
 <div class="grid">
-<div class="card"><h3>Todo por escrito</h3><p>Lo que hablamos en la reunión queda en el contrato: plazos, forma de pago, cómo se ajustan las cuotas y qué pasa si la obra se atrasa.</p></div>
-<div class="card"><h3>Obra que se puede visitar</h3><p>Coordinamos visitas a cualquier proyecto. Si venís a Mendoza, te la mostramos en persona.</p></div>
-<div class="card"><h3>Reportes de avance</h3><p>Fotos y novedades de cada etapa, aunque vivas en Buenos Aires.</p></div>
+<div class="card"><h3>Contrato antes que promesas</h3><p>Plazos, forma de pago, cómo se ajustan las cuotas y qué pasa si la obra se atrasa: todo queda en el contrato.</p></div>
+<div class="card"><h3>Sin números en redes</h3><p>No publicamos rendimientos. Los números se ven en la reunión, para tu caso y con el contrato en la mano.</p></div>
+<div class="card"><h3>Tus datos, cuidados</h3><p>Usamos tus datos solo para contactarte por tu consulta. Nunca los compartimos.</p></div>
 </div>
 </section>
 
 <section aria-labelledby="qt">
-<span class="num">N.º 08 · Preguntas</span>
+<span class="num">N.º 09 · Preguntas</span>
 <h2 id="qt">Lo que nos preguntan <em>antes de empezar.</em></h2>
 <details><summary>¿Desde cuánto puedo invertir?</summary><p>Desde USD 10.000. En la reunión te mostramos las opciones disponibles para tu monto.</p></details>
 <details><summary>¿Cuánto rinde?</summary><p>Los números los vemos en la reunión, con el contrato en la mano. No los publicamos porque dependen del proyecto, el monto y el plazo.</p></details>
@@ -217,9 +295,12 @@ footer .logo{width:170px}
 </section>
 
 <section aria-labelledby="f2t">
-<span class="num">N.º 09 · Reunión sin costo</span>
+<div class="split">
+<div class="side"><img class="" src="https://constructorres.com.ar/wp-content/uploads/2026/06/fotorres.webp" alt="Nuestro compromiso" loading="lazy" onerror="this.style.visibility='hidden'"><p class="q">“Presentes en cada paso.”<small>Constructorres · Mendoza y Buenos Aires</small></p></div>
+<div><span class="num">N.º 10 · Reunión sin costo</span>
 <h2 id="f2t">¿Hablamos? <em>Empezá acá.</em></h2>
-<div class="funnel" data-funnel="2"></div>
+<div class="funnel" data-funnel="2"></div></div>
+</div>
 </section>
 
 </main>
@@ -246,9 +327,12 @@ const CITY=[["ba","Buenos Aires"],["mza","Mendoza"],["otra","Otra ciudad"]];
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function radios(id,name,opts){return `<div class="opts" role="radiogroup">${opts.map(o=>`<label><input type="radio" name="${name}-${id}" value="${o[0]}">${esc(o[1])}</label>`).join("")}</div>`}
 
+function syncSel(el){el.querySelectorAll(".opts label").forEach(l=>{const i=l.querySelector("input");l.classList.toggle("on",!!(i&&i.checked))})}
+document.addEventListener("change",e=>{if(e.target.matches&&e.target.matches(".opts input")){const f=e.target.closest(".funnel");if(f)syncSel(f)}});
 function render(el){
  const id=el.dataset.funnel; const st={step:1,a:{}};
- const draw=()=>{
+ const draw=()=>{draw0();syncSel(el)};
+ const draw0=()=>{
   if(st.step===1){
    const gal=st.a.need==="galpon";
    el.innerHTML=`<div class="fhead"><h3>Tu perfil</h3><span class="fstep">Paso 1 de 2</span></div><div class="bar"><i style="width:50%"></i></div>
