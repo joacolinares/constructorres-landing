@@ -12,8 +12,6 @@
 /* Layout: landing de una columna con secciones numeradas N.º (como Blockenfy); funnel BANT en 2 pasos arriba y al final; CRM interno en #crm */
 :root{--navy:#173749;--navy2:#1E4258;--navy-line:#4A6575;--orange:#EC6328;--orange-l:#F28C5B;--orange-ink:#B84A17;--bg:#F6F6F6;--card:#FDFDFC;--line:#DFDFDF;--ink:#172E34;--muted:#555555;--soft:#FCEDE4;--on:#F6F6F6;--on-m:#BFD0D9;--ok:#2E7D4F;--warn:#B07A10;
 --head:'Stack Sans Headline',Arial,sans-serif;--text:'Stack Sans Text',Arial,sans-serif}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10232F;--card:#173749;--line:#2E4E61;--ink:#F1F3F4;--muted:#BFD0D9;--soft:#3A2A22;--orange-ink:#F5A47C;--navy:#0B1A23;--ok:#6CC08F;--warn:#E2B04A;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#10232F;--card:#173749;--line:#2E4E61;--ink:#F1F3F4;--muted:#BFD0D9;--soft:#3A2A22;--orange-ink:#F5A47C;--navy:#0B1A23;--ok:#6CC08F;--warn:#E2B04A;color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--text);font-size:16px;line-height:1.55}
 .wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -176,6 +174,21 @@ h1 em,h2 em{font-style:italic;font-family:Georgia,'Times New Roman',serif;font-w
 @media (max-width:860px){.hero .wrap,.split,.fam{grid-template-columns:1fr}.hero-img{min-height:300px;border-radius:22px}.hero .copy{padding-bottom:8px}.hero .wrap{padding-bottom:22px}.stats-band .wrap{grid-template-columns:repeat(2,1fr)}.split .side{min-height:320px}}
 
 /* ---- v3 vida ---- */
+
+/* galería oscura plegable */
+section.darkgal{background:#0F2633;color:#F6F6F6;border-radius:28px;padding:44px max(20px,3vw) 36px;margin-top:64px}
+section.darkgal .num{color:#BFD0D9}
+section.darkgal h2{color:#F6F6F6}
+section.darkgal h2 em{color:#F28C5B}
+section.darkgal .sub{color:#BFD0D9}
+section.darkgal .chips button{background:transparent;color:#F6F6F6;border-color:#4A6575}
+section.darkgal .chips button.on{background:#EC6328;border-color:#EC6328;color:#fff}
+section.darkgal .gal figure{background:#1E4258}
+section.darkgal .gal figcaption{background:rgba(11,26,35,.72);padding:3px 9px;border-radius:100px;text-shadow:none}
+.gal.fold figure:nth-child(n+7){display:none}
+.more{display:flex;justify-content:center;margin-top:18px}
+.more[hidden]{display:none}
+
 .proj{grid-template-columns:repeat(4,minmax(0,1fr))!important}
 .proj .pcard:first-child{grid-column:span 2}
 .proj .pcard:first-child .ph{aspect-ratio:16/9}
@@ -222,6 +235,19 @@ h1 em,h2 em{font-style:italic;font-family:Georgia,'Times New Roman',serif;font-w
 .rv{transition:opacity .7s ease,transform .7s ease}
 .rv.pre{opacity:0;transform:translateY(24px)}
 @media (prefers-reduced-motion:reduce){.marquee .track{animation:none}.rv.pre{opacity:1;transform:none}.hero-img .slide{transition:none}}
+
+/* contraste AA */
+:root{color-scheme:light}
+.topbar,.btn.pri,.pill,.chips button.on,section.darkgal .chips button.on,.opts label.on{background-color:#C64A17}
+.btn.pri{border-color:#C64A17}
+.topbar a{color:#A63D12}
+h2 em{color:#C64A17}
+section.darkgal h2 em{color:#F28C5B}
+.opts label.on{background:var(--navy)!important}
+.pcard .ph .pill{background:#C64A17}
+.pcard .ph .pill[style]{background:var(--navy)!important}
+.band h2 em,.hero h1 em{color:#F28C5B}
+.opts label.on{color:#fff!important}
 </style>
 
 <div class="topbar"><div class="wrap"><span>Reunión sin costo en nuestra oficina de Buenos Aires o en la obra en Mendoza</span><a href="#invertir">Pedila</a></div></div>
@@ -282,12 +308,13 @@ h1 em,h2 em{font-style:italic;font-family:Georgia,'Times New Roman',serif;font-w
 <div class="proj" id="proj"></div>
 </section>
 
-<section aria-labelledby="galt">
+<section aria-labelledby="galt" class="darkgal">
 <span class="num">N.º 05 · Galería</span>
 <h2 id="galt">Mirá cómo <em>construimos.</em></h2>
 <p class="sub">Fotos reales de obras entregadas y en marcha. Tocá cualquier foto para verla grande.</p>
 <div class="chips" id="chips"></div>
 <div class="gal" id="gal"></div>
+<div class="more"><button type="button" id="galMore" class="btn pri" aria-expanded="false">Ver todas las fotos</button></div>
 </section>
 
 <section aria-labelledby="jt">
@@ -492,10 +519,15 @@ if(pr){pr.innerHTML=P.map((p,pi)=>`<article class="pcard" data-p="${pi}"><div cl
 // gallery with filters
 const gal=document.getElementById("gal"),chips=document.getElementById("chips");
 if(gal){const names=["Todas"].concat(P.filter(p=>p.imgs.length>1).map(p=>p.name));let f="Todas";
- const draw=()=>{const list=ALL.filter(x=>(f==="Todas"||x.n===f)&&P.find(p=>p.name===x.n).imgs.length>1);gal.innerHTML=list.map((x,i)=>`<figure data-i="${i}"><img src="${x.u}" alt="${e(x.n)}" loading="lazy" ${hide}><figcaption>${e(x.n)}</figcaption></figure>`).join("");gal._list=list;chips.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.n===f))};
+ const draw=()=>{let list=ALL.filter(x=>(f==="Todas"||x.n===f)&&P.find(p=>p.name===x.n).imgs.length>1);if(f==="Todas"){const g={};list.forEach(x=>(g[x.n]=g[x.n]||[]).push(x));const ks=Object.keys(g),o=[];for(let i=0;o.length<list.length;i++)ks.forEach(k=>{if(g[k][i])o.push(g[k][i])});list=o}gal.innerHTML=list.map((x,i)=>`<figure data-i="${i}"><img src="${x.u}" alt="${e(x.n)}" loading="lazy" ${hide}><figcaption>${e(x.n)}</figcaption></figure>`).join("");gal._list=list;chips.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.n===f))};
  chips.innerHTML=names.map(n=>`<button type="button" data-n="${e(n)}">${e(n)}</button>`).join("");
  chips.onclick=ev=>{const b=ev.target.closest("button");if(b){f=b.dataset.n;draw()}};
- gal.onclick=ev=>{const fg=ev.target.closest("figure");if(fg)lb(gal._list,Number(fg.dataset.i))};draw();}
+ gal.onclick=ev=>{const fg=ev.target.closest("figure");if(fg)lb(gal._list,Number(fg.dataset.i))};
+ const more=document.getElementById("galMore");let open=false;
+ const fold=()=>{const many=gal._list.length>6;gal.classList.toggle("fold",many&&!open);more.parentElement.hidden=!many;more.textContent=open?"Ver menos":`Ver todas las fotos (${gal._list.length})`;more.setAttribute("aria-expanded",open)};
+ more.onclick=()=>{open=!open;fold();if(!open)gal.closest("section").scrollIntoView({behavior:reduce?"auto":"smooth"})};
+ const draw0=draw;chips.onclick=ev=>{const b=ev.target.closest("button");if(b){f=b.dataset.n;open=false;draw0();fold()}};
+ draw();fold();}
 // animated counters + reveal
 const nums=document.querySelectorAll(".stats-band b");
 const io=("IntersectionObserver" in window)?new IntersectionObserver(es=>es.forEach(en=>{if(!en.isIntersecting)return;const t=en.target;io.unobserve(t);
