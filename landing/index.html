@@ -230,6 +230,7 @@ footer .logo{width:170px}
 </div></footer>
 
 <script src="../config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
 const WA_NUMBER = (window.CR_CONFIG&&CR_CONFIG.whatsapp)||"5492612487303";
 const Q = [
@@ -307,13 +308,14 @@ function waText(a,s){
 • Reunión: ${(MEET.find(m=>m[0]===a.meet)||[])[1]}
 [Perfil ${s.tier} · ${s.points} pts]`;
 }
-const SHEET_WEBHOOK = (window.CR_CONFIG&&CR_CONFIG.sheetWebhook)||"";
+const SB = (window.supabase&&window.CR_CONFIG&&CR_CONFIG.supabaseUrl&&CR_CONFIG.supabaseKey) ? supabase.createClient(CR_CONFIG.supabaseUrl, CR_CONFIG.supabaseKey, {auth:{persistSession:false}}) : null;
 async function save(a){
  const s=score(a), p=new URLSearchParams(location.search);
  const row={fecha:new Date().toISOString(),nombre:a.n.trim(),whatsapp:a.w.trim(),email:(a.e||"").trim(),ciudad:(CITY.find(c=>c[0]===a.city)||[])[1],reunion:(MEET.find(m=>m[0]===a.meet)||[])[1],busca:lab("need",a.need,a),monto:lab("budget",a.budget,a),decide:lab("authority",a.authority,a),cuando:lab("timing",a.timing,a),puntaje:s.points,perfil:s.tier,estado:"Nuevo",utm_source:p.get("utm_source")||"",utm_campaign:p.get("utm_campaign")||"",utm_content:p.get("utm_content")||""};
  try{ if(window.fbq) fbq("track","Lead",{content_category:a.need==="galpon"?"galpon":"inversion",value:s.points}); }catch(e){}
- if(!SHEET_WEBHOOK) return;
- try{ await fetch(SHEET_WEBHOOK,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(row)}) }catch(e){ console.log("lead no guardado") }
+ if(!SB) return;
+ const rec={nombre:row.nombre,whatsapp:row.whatsapp,email:row.email,ciudad:row.ciudad,reunion:row.reunion,busca:row.busca,monto:row.monto,decide:row.decide,cuando:row.cuando,puntaje:row.puntaje,perfil:row.perfil,utm_source:row.utm_source,utm_campaign:row.utm_campaign,utm_content:row.utm_content};
+ for(let i=0;i<3;i++){ try{ const {error}=await SB.from("leads").insert(rec); if(!error) return; console.log("lead error",error.message) }catch(e){} await new Promise(r=>setTimeout(r,1500*(i+1))) }
 }
 document.querySelectorAll("[data-funnel]").forEach(render);
 document.querySelectorAll("[data-need=galpon]").forEach(b=>b.addEventListener("click",()=>{const el=document.querySelector('[data-funnel="1"]'); el._st.step=1; el._st.a.need="galpon"; delete el._st.a.budget; el._draw()}));

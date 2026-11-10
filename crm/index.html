@@ -91,10 +91,13 @@ td textarea{width:180px;min-height:34px;resize:vertical}
 <section class="gate" id="gate">
 <div class="card">
 <h2 style="font-size:22px;margin:0">Acceso al CRM</h2>
-<p class="muted" style="margin:0">Ingresá la clave del equipo. Queda guardada en este navegador.</p>
-<input id="key" type="password" autocomplete="current-password" placeholder="Clave de acceso" aria-label="Clave de acceso">
+<p class="muted" style="margin:0" id="gsub">Entrá con tu email y contraseña del equipo.</p>
+<input id="email" type="email" autocomplete="username" placeholder="Email" aria-label="Email">
+<input id="pass" type="password" autocomplete="current-password" placeholder="Contraseña (mínimo 8 caracteres)" aria-label="Contraseña">
 <p class="err" id="gerr" aria-live="polite"></p>
 <button class="btn pri" id="enter">Entrar</button>
+<button class="btn light" id="signup">Es mi primera vez: crear mi acceso</button>
+<p class="muted small" style="margin:0">Solo entran los emails que el equipo habilitó.</p>
 </div>
 </section>
 
@@ -126,19 +129,26 @@ td textarea{width:180px;min-height:34px;resize:vertical}
 <div class="tbl"><table><thead><tr>
 <th data-s="fecha">Fecha ▾</th><th data-s="nombre">Nombre</th><th>WhatsApp</th><th data-s="ciudad">Ciudad</th><th data-s="busca">Busca</th><th data-s="monto">Monto</th><th data-s="decide">Decide</th><th data-s="cuando">Cuándo</th><th data-s="reunion">Reunión</th><th data-s="puntaje">Perfil</th><th data-s="estado">Estado</th><th>Notas</th><th data-s="utm_source">Fuente</th>
 </tr></thead><tbody id="rows"></tbody></table></div>
-<p class="muted small" style="margin:10px 0 0">Borde rojo: lead en "Nuevo" con más de 5 minutos sin contactar. El estado y las notas se guardan en la planilla al cambiarlos.</p>
+<p class="muted small" style="margin:10px 0 0">Borde rojo: lead en "Nuevo" con más de 5 minutos sin contactar. El estado y las notas se guardan al instante y los ve todo el equipo.</p>
+</div>
+<div class="card" id="teamCard">
+<h2>Equipo con acceso</h2>
+<p class="muted small" style="margin:0 0 10px">Agregá el email de cada persona. Después entra a esta página, toca "crear mi acceso" y elige su contraseña.</p>
+<div class="filters"><input type="email" id="newMember" placeholder="email@ejemplo.com" aria-label="Email a habilitar"><button class="btn pri" id="addMember">Dar acceso</button></div>
+<div id="team" class="small"></div>
 </div>
 </main>
 </div>
 <div class="toast" id="toast" hidden></div>
 
 <script src="../config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
-const CFG=window.CR_CONFIG||{}; const API=CFG.sheetWebhook||"";
+const CFG=window.CR_CONFIG||{};
+const SB=(window.supabase&&CFG.supabaseUrl&&CFG.supabaseKey)?supabase.createClient(CFG.supabaseUrl,CFG.supabaseKey):null;
 const ESTADOS=["Nuevo","Contactado","Reunión agendada","Reunión hecha","Firmó","Descartado"];
 const BUDGET_MID={"Menos de USD 10.000":5000,"USD 10.000 a 20.000":15000,"USD 20.000 a 50.000":35000,"Más de USD 50.000":60000};
-let KEY=""; try{KEY=localStorage.getItem("cr_key")||""}catch(e){}
-let LEADS=[], seen=null, sortBy="fecha", sortDir=-1, lastOk=0, timer=null, editing=false, failing=0;
+let LEADS=[], seen=null, sortBy="fecha", sortDir=-1, lastOk=0, timer=null, editing=false, failing=0, chan=null;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const num=n=>Number(n||0).toLocaleString("es-AR");
@@ -151,38 +161,66 @@ ESTADOS.forEach(e=>$("fEstado").insertAdjacentHTML("beforeend",`<option>${e}</op
 try{const s=localStorage.getItem("cr_spend"); if(s) $("spend").value=s}catch(e){}
 $("spend").addEventListener("input",()=>{try{localStorage.setItem("cr_spend",$("spend").value)}catch(e){} renderCosts()});
 
-async function api(params){
- const u=new URL(API); Object.entries(params).forEach(([k,v])=>u.searchParams.set(k,v));
- const r=await fetch(u.toString(),{cache:"no-store"}); return r.json();
-}
-async function load(first){
- if(!API){$("gerr").textContent="Falta configurar la URL del CRM en config.js.";return false}
+async function load(){
  try{
-  const d=await api({key:KEY,action:"list"});
-  if(!d.ok){ if(d.error==="key"){logout("Clave incorrecta.");} return false }
+  const {data,error}=await SB.from("leads").select("*").order("created_at",{ascending:false}).limit(5000);
+  if(error) throw error;
   failing=0; lastOk=Date.now();
-  const rows=d.rows.map(r=>({...r,puntaje:Number(r.puntaje)||0,_d:toDate(r.fecha)})).filter(r=>r.nombre||r.whatsapp);
+  const rows=data.map(r=>({...r,row:r.id,fecha:r.created_at,puntaje:Number(r.puntaje)||0,_d:toDate(r.created_at)}));
   if(seen){const fresh=rows.filter(r=>!seen.has(r.row)); if(fresh.length){toast(fresh.length===1?`Nuevo lead: ${fresh[0].nombre} · Perfil ${fresh[0].perfil}`:`${fresh.length} leads nuevos`); fresh.forEach(r=>r._new=true)}}
   seen=new Set(rows.map(r=>r.row)); LEADS=rows;
   if(!editing) render(); else renderTop();
   setLive(true); return true;
- }catch(e){ failing++; setLive(false); if(first) $("gerr").textContent="No pudimos conectar con la planilla. Revisá la URL en config.js y que la app web tenga acceso para cualquier usuario."; return false }
+ }catch(e){ failing++; setLive(false); return false }
 }
 function setLive(ok){$("dot").classList.toggle("off",!ok);}
 setInterval(()=>{if(!lastOk)return; const s=Math.round((Date.now()-lastOk)/1000); $("liveTxt").textContent=(failing?"Sin conexión · ":"En vivo · ")+(s<5?"recién actualizado":`hace ${s} s`)},1000);
-function startPolling(){clearInterval(timer); timer=setInterval(()=>{if(document.visibilityState==="visible") load()},10000)}
-document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&KEY) load()});
-
-async function enter(){
- KEY=$("key").value.trim()||KEY; if(!KEY){$("gerr").textContent="Ingresá la clave.";return}
- $("gerr").textContent="Conectando…";
- const ok=await load(true);
- if(ok){try{localStorage.setItem("cr_key",KEY)}catch(e){} $("gate").hidden=true; $("app").hidden=false; ["live","refresh","logout"].forEach(i=>$(i).hidden=false); $("gerr").textContent=""; startPolling()}
+function startLive(){
+ clearInterval(timer); timer=setInterval(()=>{if(document.visibilityState==="visible") load()},30000);
+ if(chan) SB.removeChannel(chan);
+ chan=SB.channel("leads-live").on("postgres_changes",{event:"*",schema:"public",table:"leads"},()=>load()).subscribe();
 }
-function logout(msg){try{localStorage.removeItem("cr_key")}catch(e){} KEY=""; clearInterval(timer); $("app").hidden=true; $("gate").hidden=false; ["live","refresh","logout"].forEach(i=>$(i).hidden=true); $("gerr").textContent=msg||""}
-$("enter").onclick=enter; $("key").addEventListener("keydown",e=>{if(e.key==="Enter")enter()});
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&!$("app").hidden) load()});
+
+async function isTeam(){const {data,error}=await SB.from("team").select("email"); return !error&&data&&data.length>0}
+async function open_(){
+ if(!(await isTeam())){$("gerr").textContent="Tu email todavía no tiene acceso. Pedile a Joaco que te agregue en Equipo con acceso."; await SB.auth.signOut(); return}
+ const ok=await load();
+ if(!ok){$("gerr").textContent="No pudimos cargar los leads. Probá de nuevo en un minuto.";return}
+ $("gate").hidden=true; $("app").hidden=false; ["live","refresh","logout"].forEach(i=>$(i).hidden=false); $("gerr").textContent=""; startLive(); loadTeam();
+}
+async function enter(){
+ if(!SB){$("gerr").textContent="La base de datos todavía no está configurada.";return}
+ const email=$("email").value.trim(), password=$("pass").value;
+ if(!email||!password){$("gerr").textContent="Completá email y contraseña.";return}
+ $("gerr").textContent="Entrando…";
+ const {error}=await SB.auth.signInWithPassword({email,password});
+ if(error){$("gerr").textContent=/confirm/i.test(error.message)?"Confirmá tu email: te mandamos un link a tu casilla.":"Email o contraseña incorrectos.";return}
+ open_();
+}
+async function signup(){
+ if(!SB){$("gerr").textContent="La base de datos todavía no está configurada.";return}
+ const email=$("email").value.trim(), password=$("pass").value;
+ if(!email||password.length<8){$("gerr").textContent="Escribí tu email y una contraseña de al menos 8 caracteres.";return}
+ const {data,error}=await SB.auth.signUp({email,password,options:{emailRedirectTo:location.href.split("#")[0]}});
+ if(error){$("gerr").textContent=/registered|exists/i.test(error.message)?"Ese email ya tiene acceso: tocá Entrar.":"No se pudo crear el acceso: "+error.message;return}
+ if(data.session) return open_();
+ $("gerr").textContent="Listo. Te mandamos un email para confirmar: abrí el link y después tocá Entrar.";
+}
+async function logout(msg){try{await SB.auth.signOut()}catch(e){} clearInterval(timer); if(chan){SB.removeChannel(chan);chan=null} $("app").hidden=true; $("gate").hidden=false; ["live","refresh","logout"].forEach(i=>$(i).hidden=true); $("gerr").textContent=msg||""}
+$("enter").onclick=enter; $("signup").onclick=signup; $("pass").addEventListener("keydown",e=>{if(e.key==="Enter")enter()});
 $("logout").onclick=()=>logout(); $("refresh").onclick=()=>load();
-if(KEY){$("key").value=""; enter()}
+if(SB){SB.auth.getSession().then(({data})=>{if(data.session) open_()})} else {$("gerr").textContent="La base de datos todavía no está configurada."}
+
+async function loadTeam(){
+ const {data}=await SB.from("team").select("email,created_at").order("created_at");
+ $("team").innerHTML=(data||[]).map(t=>`<span class="tier C" style="margin:0 6px 6px 0;font-weight:600">${esc(t.email)}</span>`).join("")||'<span class="muted">Sin miembros.</span>';
+}
+$("addMember").onclick=async()=>{
+ const email=$("newMember").value.trim().toLowerCase(); if(!/^\S+@\S+\.\S+$/.test(email)){toast("Escribí un email válido.");return}
+ const {error}=await SB.from("team").insert({email}); if(error&&!/duplicate/i.test(error.message)){toast("No se pudo agregar: "+error.message);return}
+ $("newMember").value=""; toast(`Acceso habilitado para ${email}`); loadTeam();
+};
 
 function toast(t){const el=$("toast"); el.textContent=t; el.hidden=false; clearTimeout(el._t); el._t=setTimeout(()=>el.hidden=true,6000); document.title="● "+t.slice(0,40)+" · CRM"; setTimeout(()=>document.title="CRM de leads · Constructorres",8000)}
 
@@ -282,9 +320,9 @@ document.querySelectorAll("th[data-s]").forEach(th=>th.addEventListener("click",
 $("rows").addEventListener("focusin",()=>editing=true);
 $("rows").addEventListener("focusout",()=>{editing=false});
 $("rows").addEventListener("change",async e=>{
- const el=e.target, f=el.dataset.f; if(!f) return; const tr=el.closest("tr"), row=Number(tr.dataset.row);
- const l=LEADS.find(x=>x.row===row); if(l) l[f]=el.value;
- try{ await fetch(API,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"update",key:KEY,row,[f]:el.value})}); toast(f==="estado"?`Estado guardado: ${el.value}`:"Nota guardada"); renderTop(); setTimeout(load,1500) }
+ const el=e.target, f=el.dataset.f; if(!f) return; const tr=el.closest("tr"), row=tr.dataset.row;
+ const l=LEADS.find(x=>String(x.row)===row); if(l) l[f]=el.value;
+ try{ const {error}=await SB.from("leads").update({[f]:el.value}).eq("id",tr.dataset.row); if(error) throw error; toast(f==="estado"?`Estado guardado: ${el.value}`:"Nota guardada"); renderTop() }
  catch(err){ toast("No se pudo guardar. Revisá la conexión.") }
 });
 $("csv").onclick=()=>{
